@@ -30,7 +30,7 @@ my_recevicer = 'xxxxx@qq.com'  # 收件人邮箱账号，可发送给自己
 
 def mail(text):
 	ret = True
-try:
+	try:
 		msg = MIMEText(text, 'plain', 'utf-8')
 		msg['From'] = formataddr(["From TonyRobot", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
 		msg['To'] = formataddr(["tony", my_recevicer])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
