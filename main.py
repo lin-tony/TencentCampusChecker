@@ -21,26 +21,26 @@ headers = {
 			"Connection": "keep-alive",
 			"Cache-Control": "max-age=0",
 			"Upgrade-Insecure-Requests": "1",
-			"Cookie": "" # 这里记得去copy
+			"Cookie": "" 		# 这里记得去copy
 		}
-my_sender = 'xxxxx@qq.com'  # 发件人邮箱账号
-my_pass = 'xxxxxxxxxxxxxxxx'  # 发件人邮箱的smtp授权码
-my_recevicer = 'xxxxx@qq.com'  # 收件人邮箱账号，可发送给自己
+my_sender = 'xxxxx@qq.com'  	# 发件人邮箱账号
+my_pass = 'xxxxxxxxxxxxxx'  	# 发件人邮箱的smtp授权码
+my_recevicer = 'xxxxx@qq.com'   # 收件人邮箱账号，可发送给自己
 
 
 def mail(text):
 	ret = True
 	try:
 		msg = MIMEText(text, 'plain', 'utf-8')
-		msg['From'] = formataddr(["From TonyRobot", my_sender])  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
-		msg['To'] = formataddr(["tony", my_recevicer])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
-		msg['Subject'] = "腾讯，再爱我一次"  # 邮件的主题，也可以说是标题
+		msg['From'] = formataddr(["From TonyRobot", my_sender])  # 发件人邮箱昵称、发件人邮箱账号
+		msg['To'] = formataddr(["tony", my_recevicer])  # 收件人邮箱昵称、收件人邮箱账号
+		msg['Subject'] = "腾讯，再爱我一次"  # 邮件标题
 
-		server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器
-		server.login(my_sender, my_pass)  # 括号中对应的是发件人邮箱账号、邮箱密码
-		server.sendmail(my_sender, [my_recevicer, ], msg.as_string())  # 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件
+		server = smtplib.SMTP_SSL("smtp.qq.com", 465)  # 发件人邮箱中的SMTP服务器+端口
+		server.login(my_sender, my_pass)  # 发件人邮箱账号、邮箱密码
+		server.sendmail(my_sender, [my_recevicer, ], msg.as_string())  # 发件人邮箱账号、收件人邮箱账号、发送邮件
 		server.quit()  # 关闭连接
-	except Exception:  # 如果 try 中的语句没有执行，则会执行下面的 ret=False
+	except Exception:
 		ret = False
 	return ret
 
@@ -48,8 +48,8 @@ def mail(text):
 if __name__ == "__main__":
 	while True:
 		response = requests.get(url=start_url, headers=headers)
-		if response.text.find("HR面试") == -1: # 这里因为在等HR面状态变为已完成，所以很暴力
-			while mail(response.text) == False:
+		if response.text.find("HR面试") == -1 or response.text.find("textgreen") == -1: # 等状态变为已完成或者变灰，自行更改
+			while mail(response.text) == False: # 暴力重发
 				time.sleep(10)
 			break
 		nowTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
